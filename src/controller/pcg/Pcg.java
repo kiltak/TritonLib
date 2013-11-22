@@ -323,7 +323,7 @@ public class Pcg {
         
         for (String filename : filenames) {
             if (filename != "") {
-                if (!pcg.readFile(filename)) { // Loads F
+                if (!pcg.readFile(filename)) {
                     System.err.println ("Could not read " + filename);
                     System.exit(1);
                 }
