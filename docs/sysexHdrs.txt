@@ -1,0 +1,28 @@
+
+    public static final byte MODE_REQUEST =                               0x12;
+    public static final byte CURRENT_PROGRAM_PARAMERTER_DUMP_REQUEST =    0x10;
+    public static final byte PROGRAM_PARAMETER_DUMP_REQUEST =             0x1C;
+    public static final byte CURRENT_COMBINATION_PARAMETER_DUMP_REQUEST = 0x19;
+    public static final byte COMBINATION_PARAMETER_DUMP_REQUEST =         0x1D;
+    public static final byte SEQUENCE_DATA_DUMP_REQUEST =                 0x18;
+    public static final byte GLOBAL_DATA_DUMP_REQUEST =                   0x0E;
+    public static final byte DRUMKIT_DATA_DUMP_REQUEST =                  0x0D;
+    public static final byte ARPEGGIO_PATTERN_DATA_DUMP_REQUEST =         0x34;
+    public static final byte ALL_DATA_DUMP_REQUEST =                      0x0F;
+    public static final byte PROGRAM_WRITE_REQUEST =                      0x11;
+    public static final byte COMBINATION_WRITE_REQUEST =                  0x1A;
+    
+    public static final byte CURRENT_PROGRAM_PARAMETER_DUMP =     0x40;
+    public static final byte PROGRAM_PARAMETER_DUMP =             0x4C;
+    public static final byte CURRENT_COMBINATION_PARAMETER_DUMP = 0x49;
+    public static final byte COMBINATION_PARAMETER_DUMP =         0x4D;
+    public static final byte SEQUENCE_DATA_DUMP =                 0x48;
+    public static final byte GLOBAL_DATA_DUMP =                   0x51;
+    public static final byte DRUMKIT_DATA_DUMP =                  0x52;
+    public static final byte ARPEGGIO_PATTERN_DATA_DUMP =         0x69;
+    public static final byte ALL_DATA_DUMP =                      0x50;
+    
+    public static final byte MODE_CHANGE =                       0x4E;
+    public static final byte PARAMETER_CHANGE =                  0x41;
+    public static final byte DRUMKIT_PARAMETER_CHANGE =          0x53;
+    public static final byte ARPEGGIO_PATTERN_PARAMETER_CHANGE = 0x6D;
