@@ -2,57 +2,43 @@ package model;
 
 import java.util.ArrayList;
 
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.SysexMessage;
-
 import controller.pcg.Pcg;
-import controller.utils.MidiParser;
-import util.TritonRequest;
 import model.sound.Bank;
 import model.sound.Location;
 import model.sound.combination.Combination;
 import model.sound.program.Program;
 import model.global.Global;
 
-public class Triton extends Keyboard {
+public class Triton {
 	public Triton() {
-		super._inReceiver = this;
-		
-//		int i;
 		_progs = new Bank[Bank.NUMBER_OF_BANKS];
-//		for (i = 0; i < _progs.length; ++i) {
-//		    _progs[i] = new Bank(Bank.PROG, i);
-//		}
         _combis = new Bank[Bank.NUMBER_OF_BANKS];
-//        for (i = 0; i < _combis.length; ++i) {
-//            _combis[i] = new Bank(Bank.COMBI, i);
-//        }
 	}
 
-	public void send(MidiMessage message, long lTimeStamp) {
-		String strMessage = null;
-		if (message instanceof SysexMessage) {
-			strMessage = _midiParser.decodeMessage((SysexMessage) message, this);
-		}
-//		else {
-//			strMessage = "unknown message type " + message.getClass();
+//	public void send(MidiMessage message, long lTimeStamp) {
+//		String strMessage = null;
+//		if (message instanceof SysexMessage) {
+//			strMessage = _midiParser.decodeMessage((SysexMessage) message, this);
 //		}
-		String strTimeStamp = null;
+////		else {
+////			strMessage = "unknown message type " + message.getClass();
+////		}
+//		String strTimeStamp = null;
+//
+//		if (lTimeStamp == -1L) {
+//			strTimeStamp = "timestamp [unknown]: ";
+//		} else {
+//			strTimeStamp = "timestamp " + lTimeStamp + " us: ";
+//		}
+//
+//		if (strMessage != null) {
+//			System.out.println(strTimeStamp + strMessage);
+//		}
+//	}
 
-		if (lTimeStamp == -1L) {
-			strTimeStamp = "timestamp [unknown]: ";
-		} else {
-			strTimeStamp = "timestamp " + lTimeStamp + " us: ";
-		}
-
-		if (strMessage != null) {
-			System.out.println(strTimeStamp + strMessage);
-		}
-	}
-
-	public void requestMode(int channel) {
-		sendMsg ((TritonRequest.buildRequest(TritonRequest.MODE_REQUEST, channel)));
-	}
+//	public void requestMode(int channel) {
+//		sendMsg ((TritonRequest.buildRequest(TritonRequest.MODE_REQUEST, channel)));
+//	}
 	
 //	/*****************************
 //	 *          PROGRAM DATA
@@ -259,6 +245,9 @@ public class Triton extends Keyboard {
 	}
 	
 	public void setSingleProg (Program p, int bank, int offset) {
+		if (_progs[bank] == null) {
+			_progs[bank] = new Bank(Bank.PROG, bank);
+		}
 	    _progs[bank].set(p, offset);
 	}
     
@@ -287,6 +276,9 @@ public class Triton extends Keyboard {
     }
     
     public void setSingleCombi (Combination p, int bank, int offset) {
+		if (_combis[bank] == null) {
+			_combis[bank] = new Bank(Bank.COMBI, bank);
+		}
         _combis[bank].set(p, offset);
     }
     
@@ -315,5 +307,5 @@ public class Triton extends Keyboard {
 	
 	private Global _global = new Global();
 	
-	private MidiParser _midiParser = new MidiParser();
+//	private MidiParser _midiParser = new MidiParser();
 }

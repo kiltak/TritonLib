@@ -7,6 +7,7 @@ import javax.sound.midi.SysexMessage;
 
 import model.Triton;
 import model.global.Global;
+import model.sound.Bank;
 import model.sound.combination.Combination;
 import model.sound.program.Program;
 
@@ -24,7 +25,14 @@ public class MidiParser {
 
     private Vector<Byte> _fullSysex = new Vector<Byte>();
 
-    public String decodeMessage(SysexMessage message, Triton triton) {
+    /**
+     * 
+     * @param message
+     * @param triton
+     * @return True if the message is finished
+     *         False if the message needs to continue
+     */
+    public boolean decodeMessage(SysexMessage message, Triton triton) {
         byte[] data = message.getData();
         boolean parseMsg = true;
 
@@ -62,7 +70,7 @@ public class MidiParser {
             _fullSysex.clear();
         }
 
-        return strMessage;
+        return parseMsg;
     }
 
     private static String getHexString(byte[] aByte) {
@@ -81,7 +89,7 @@ public class MidiParser {
             bytes[i] = (byte) itr.next();
         }
 
-        // System.out.println ("Parsing " + String.format("%02X", bytes[3]));
+         System.out.println ("Parsing " + String.format("%02X", bytes[3]));
 
         // Check last byte for 0xF7
         if (bytes[bytes.length - 1] != (byte) 0xF7) {
@@ -125,14 +133,14 @@ public class MidiParser {
      */
     private static int[] parseProgCombiHdr(byte b1, byte b2, byte b3) {
         int[] retArr = new int[4];
-
+        
         retArr[0] = b1 & 0x01; // available bank
         retArr[1] = (b2 & 0x30) >> 4; // kind
-        retArr[2] = retArr[1] >= 1 ? (b2 & 0x07) : retArr[0] * 5; // bank 5 is
+        retArr[2] = retArr[1] >= 1 ? (b2 & 0x0F) : retArr[0] * 5; // bank 5 is
                                                                   // the int/ext
                                                                   // offset
         retArr[3] = retArr[1] == 2 ? (b3 & 0x7F) : 0; // program/combi number
-
+        
         return retArr;
     }
 
@@ -147,7 +155,6 @@ public class MidiParser {
         int bank, progNo;
 
         int[] hdrVals = parseProgCombiHdr(data[4], data[5], data[6]);
-        // availableBank = hdrVals[0];
         bank = hdrVals[2];
         progNo = hdrVals[3];
 
@@ -160,10 +167,9 @@ public class MidiParser {
         for (int offset = 0; offset < progData.length; offset += Program.BYTE_SIZE) {
             Program p = new Program();
             p.unpack(progData, offset);
-            triton.setSingleProg(p, bank, offset);
+            triton.setSingleProg(p, bank, progNo);
 
-            // System.out.println (String.format("%s%s-%03d: ",
-            // _availableBanks[availableBank], _banks[bank], progNo) + p);
+            //System.out.println (String.format("%s-%03d: ", Bank.BANK_NAMES[bank], progNo) + p);
 
             ++progNo;
             if (progNo == 128) {
@@ -180,7 +186,6 @@ public class MidiParser {
      * @param data
      */
     private static void parseCombination(byte[] data, Triton triton) {
-        // int availableBank;
         int bank, progNo;
 
         int[] hdrVals = parseProgCombiHdr(data[4], data[5], data[6]);
@@ -197,10 +202,9 @@ public class MidiParser {
         for (int offset = 0; offset < combiData.length; offset += Combination.BYTE_SIZE) {
             Combination c = new Combination();
             c.unpack(combiData, offset);
-            triton.setSingleCombi(c, bank, offset);
+            triton.setSingleCombi(c, bank, progNo);
 
-            // System.out.println (String.format("%s%s-%03d: ",
-            // _availableBanks[availableBank], _banks[bank], progNo) + c);
+            //System.out.println (String.format("%s%s-%03d: ", Bank.BANK_NAMES[bank], progNo) + c);
 
             ++progNo;
             if (progNo == 128) {
