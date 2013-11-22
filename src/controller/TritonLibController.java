@@ -1,6 +1,7 @@
 package controller;
 
 import controller.utils.FileIO;
+import controller.utils.TritonMidiIO;
 import view.TritonLib;
 import model.Triton;
 import model.sound.Bank;
@@ -18,8 +19,8 @@ public class TritonLibController {
      * @param out
      */
     public void setMidiChannels (int in, int out) {
-        _triton.initMidiIn(in);
-        _triton.initMidiOut(out);
+    	_midiIO.initMidiIn(in);
+    	_midiIO.initMidiOut(out);
     }
     
     public void swapPrograms (int bankA, int offsetA, int bankB, int offsetB) {
@@ -105,10 +106,10 @@ public class TritonLibController {
      ***************************/
     
     public void shutdown () {
-        _triton.close();
+        _midiIO.close();
     }
     
     private Triton _triton = new Triton();  // Should I instantiate the model here???  Feels wrong.
     private TritonLib _view;
-
+    private TritonMidiIO _midiIO = new TritonMidiIO (_triton);
 }

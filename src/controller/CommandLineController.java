@@ -1,6 +1,10 @@
 package controller;
 
+import javax.sound.midi.SysexMessage;
+
 import controller.utils.FileIO;
+import controller.utils.TritonMidiIO;
+import util.TritonRequest;
 import view.View;
 import model.Triton;
 import model.sound.Bank;
@@ -15,8 +19,8 @@ public class CommandLineController {
      * @param out
      */
     public void setMidiChannels (int in, int out) {
-        _triton.initMidiIn(in);
-        _triton.initMidiOut(out);
+        _midiIO.initMidiIn(in);
+        _midiIO.initMidiOut(out);
     }
     
     public void swapPrograms (int bankA, int offsetA, int bankB, int offsetB) {
@@ -100,11 +104,34 @@ public class CommandLineController {
     /***************************
      * 
      ***************************/
+
+    public void requestProgramBank (int bank) {
+    	SysexMessage msg = TritonRequest.requestBankProgams(0, bank);
+    	_midiIO.sendMsg(msg);
+    }
+    
+    public void requestSingleProgram (int bank, int offset) {
+    	SysexMessage msg = TritonRequest.requestSingleProgram(0, bank, offset);
+    	_midiIO.sendMsg(msg);
+    }
+    
+    public void requestAllPrograms () {
+    	_midiIO.sendMsg (TritonRequest.requestAllPrograms(0));
+    }
+    
+    public void requestAllCombis () {
+    	_midiIO.sendMsg(TritonRequest.requestAllCombis(0));
+    }
+    
+    public void requestGlobal () {
+    	_midiIO.sendMsg(TritonRequest.requestGlobalData(0));
+    }
     
     public void shutdown () {
-        _triton.close();
+        _midiIO.close();
     }
     
     private Triton _triton = new Triton();  // Should I instantiate the model here???  Feels wrong.
     private View _view;
+    private TritonMidiIO _midiIO = new TritonMidiIO (_triton);
 }
