@@ -115,6 +115,7 @@ public class Bank {
     public final static int INTC = NUMBER_OF_BANKS++;
     public final static int INTD = NUMBER_OF_BANKS++;
     public final static int INTE = NUMBER_OF_BANKS++;
+    public final static int INTF = NUMBER_OF_BANKS++;
     public final static int EXTA = NUMBER_OF_BANKS++;
     public final static int EXTB = NUMBER_OF_BANKS++;
     public final static int EXTC = NUMBER_OF_BANKS++;
@@ -122,8 +123,8 @@ public class Bank {
     public final static int EXTE = NUMBER_OF_BANKS++;
     public final static int EXTF = NUMBER_OF_BANKS++;
     public final static int EXTG = NUMBER_OF_BANKS++;
-    public final static int EXTH = NUMBER_OF_BANKS;
+    public final static int EXTH = NUMBER_OF_BANKS++;
     
-    public final static String[] BANK_NAMES = {"IntA", "IntB", "IntC", "IntD", "IntE",
+    public final static String[] BANK_NAMES = {"IntA", "IntB", "IntC", "IntD", "IntE", "IntF",
                                         "ExtA", "ExtB", "ExtC", "ExtD", "ExtE", "ExtF", "ExtG", "ExtH"};
 }
