@@ -13,7 +13,7 @@ public class TritonMidiIO extends MidiIO {
 		super._inReceiver = this;
 		_triton = triton;
 		midiSender = new MidiSender(this);
-		Thread t = new Thread(midiSender);
+		t = new Thread(midiSender);
 		t.start();
 	}
 
@@ -25,16 +25,18 @@ public class TritonMidiIO extends MidiIO {
 		if (message instanceof SysexMessage) {
 //			midiSender.shouldRun(_midiParser.decodeMessage((SysexMessage) message, _triton));
 			if (_midiParser.decodeMessage((SysexMessage) message, _triton)) {
-				midiSender.shouldRun(true); // the message is to be continued...
+				midiSender.shouldRun(true); // the message is finished
+				t.interrupt();
 			}
 			else {
-				midiSender.shouldRun(false); // the message is finished
+				midiSender.shouldRun(false); // the message is to be continued...
 			}
 		}
 	}
 	
 	public void sendMsg(MidiMessage msg) {
 		midiSender.addMsg(msg);
+		t.interrupt();
 	}
 	
 	public void reallySendMsg (MidiMessage msg) {
@@ -44,4 +46,5 @@ public class TritonMidiIO extends MidiIO {
 	// TODO: Take Triton out of TritonMidiIO.  Should return objects to add.
 	Triton _triton;
 	MidiSender midiSender;
+	Thread t;
 }

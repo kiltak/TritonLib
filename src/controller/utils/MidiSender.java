@@ -13,18 +13,19 @@ public class MidiSender implements Runnable {
 	@Override
 	public void run() {
 		MidiMessage msg;
-		try {
-			while (true) {
+		while (true) {
+			try {
 				if (runFlag && !msgToSend.isEmpty()) {
 					msg = msgToSend.remove();
 					midiIO.reallySendMsg(msg);
-					Thread.sleep(1000); // Give the hardware a little breathing room
+					Thread.sleep(1000); // Give the hardware a little breathing
+										// room
 				}
-				Thread.sleep(10000);
+				Thread.sleep(5000);
 			}
-		}
-		catch (InterruptedException e) {
-			System.out.println("sleep was interupted...");
+			catch (InterruptedException e) {
+				// Sometimes it's good to wake up and get to work!
+			}
 		}
 	}
 
