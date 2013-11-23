@@ -5,24 +5,14 @@ import java.util.Vector;
 
 import javax.sound.midi.SysexMessage;
 
+import util.TritonDump;
+
 import model.Triton;
 import model.global.Global;
-import model.sound.Bank;
 import model.sound.combination.Combination;
 import model.sound.program.Program;
 
 public class MidiParser {
-    // private static final byte CURRENT_PROGRAM_PARAMETER_DUMP = 0x40;
-    private static final byte PROGRAM_PARAMETER_DUMP = 0x4C;
-    // private static final byte CURRENT_COMBINATION_PARAMETER_DUMP = 0x49;
-    private static final byte COMBINATION_PARAMETER_DUMP = 0x4D;
-    // private static final byte SEQUENCE_DATA_DUMP = 0x48;
-    private static final byte GLOBAL_DATA_DUMP = 0x51;
-
-    // private static final byte DRUMKIT_DATA_DUMP = 0x52;
-    // private static final byte ARPEGGIO_PATTERN_DATA_DUMP = 0x69;
-    // private static final byte ALL_DATA_DUMP = 0x50;
-
     private Vector<Byte> _fullSysex = new Vector<Byte>();
     //private MessageFileDumper fileDump = new MessageFileDumper("everything");
 
@@ -105,13 +95,13 @@ public class MidiParser {
         if ((bytes[0] == 0x42) && ((bytes[1] & 0xF0) == 0x30)
                 && (bytes[2] == 0x50)) {
             switch (bytes[3]) {
-                case PROGRAM_PARAMETER_DUMP:
+                case TritonDump.PROGRAM_PARAMETER_DUMP:
                     parseProgram(bytes, triton);
                     break;
-                case COMBINATION_PARAMETER_DUMP:
+                case TritonDump.COMBINATION_PARAMETER_DUMP:
                     parseCombination(bytes, triton);
                     break;
-                case GLOBAL_DATA_DUMP:
+                case TritonDump.GLOBAL_DATA_DUMP:
                     return parseGlobal(bytes);
                 default:
                     System.out.println("Unkown sysex msg (0x"
