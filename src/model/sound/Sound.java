@@ -1,3 +1,9 @@
+/**
+ * The basic building block for the programs and combinations.
+ * 
+ * This takes care of effects and the name.
+ */
+
 package model.sound;
 
 import model.effects.*;

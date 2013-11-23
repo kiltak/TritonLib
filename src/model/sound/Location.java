@@ -1,3 +1,7 @@
+/**
+ * This is just the location of the sound.  Bank and offset within the bank.
+ */
+
 package model.sound;
 
 public class Location {
