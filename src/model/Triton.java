@@ -1,3 +1,13 @@
+/**
+ * Model for the librarian.  This contains everything that is being used.
+ * 
+ * - Banks of programs
+ * - Banks of combinations
+ * - Global data
+ * - Arpeggios (future, because I don't care about them)
+ * - Drum Kits (future, because I don't care about them)
+ */
+
 package model;
 
 import java.util.ArrayList;
@@ -306,6 +316,4 @@ public class Triton {
 	private Bank[] _combis;
 	
 	private Global _global = new Global();
-	
-//	private MidiParser _midiParser = new MidiParser();
 }
