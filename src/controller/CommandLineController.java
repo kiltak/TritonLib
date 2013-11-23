@@ -105,6 +105,15 @@ public class CommandLineController {
      * 
      ***************************/
 
+    public void requestEverything () {
+    	requestAllPrograms();
+    	for (int i = Bank.EXTA; i < Bank.NUMBER_OF_BANKS; ++i) { // Rack hardware needs special invitation for these banks
+    		requestProgramBank(i);
+    	}
+    	requestAllCombis();
+    	requestGlobal();
+    }
+    
     public void requestProgramBank (int bank) {
     	SysexMessage msg = TritonRequest.requestBankProgams(0, bank);
     	_midiIO.sendMsg(msg);

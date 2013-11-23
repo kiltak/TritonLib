@@ -6,12 +6,16 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.SysexMessage;
+
+import util.TritonRequest;
 
 import model.sound.Bank;
 import model.sound.Location;
 import model.sound.combination.Combination;
 import model.sound.program.Program;
 import controller.CommandLineController;
+import controller.utils.TritonMidiIO;
 
 class CommandLine implements View {
     public void setController (CommandLineController controller) {
@@ -49,41 +53,17 @@ class CommandLine implements View {
         CommandLine lib = new CommandLine();
         lib.setController(controller);
         controller.setView(lib);
-
-//        /************** Start staged data *************/
-//        // Combination Bank
-//        FileReader fr = new FileReader("src/staged/dump/combiBank");
-//        SysexMessage msg;
-//        while ((msg = fr.getNextMsg()) != null) {
-//            lib.key.send(msg, -1L);
-//        }
-//        fr.close();
-//        // Program Bank
-//        fr = new FileReader("src/staged/dump/progBank");
-//        while ((msg = fr.getNextMsg()) != null) {
-//            lib.key.send(msg, -1L);
-//        }
-//        fr.close();
-//        // Global
-//        fr = new FileReader("src/staged/dump/global");
-//        while ((msg = fr.getNextMsg()) != null) {
-//            lib.key.send(msg, -1L);
-//        }
-//        fr.close();
-//        /************** End staged data *************/
         
         Scanner input = new Scanner(System.in);
         
-//        listDevices();
+        listDevices();
 //        System.out.println ("Enter input device:");
 //        String inputVal = input.next();
 //        System.out.println ("Enter output device:");
 //        String outputVal = input.next();
 //        lib._controller.setMidiChannels(inputVal, outputVal);
 //
-//        lib._controller.setMidiChannels(1, 5);
-
-        lib._controller.readPcgFile("/media/DC18-239C/private/MIDIprograms/TritonLib/docs/PCG/PRELOAD.PCG");
+        lib._controller.setMidiChannels(1, 5);
         
         boolean quit = false;
         String cmd;
@@ -115,9 +95,7 @@ class CommandLine implements View {
                 case "l":  // load the sounds to the keyboard  
                     break;
                 case "g":  // get the sounds from the keyboard
-//                    lib.key.requestAllPrograms(0);
-//                    lib.key.requestAllCombis(0);
-//                    lib.key.requestGlobalData(0);
+                	lib._controller.requestEverything();
                     break;
                 case "o": // open a pcg file
                     System.out.print ("Enter filename: ");
@@ -181,10 +159,8 @@ class CommandLine implements View {
         String retString = "";
         // Print the headers
         retString += "     ";
-        for (int bank = 0; bank < b.length; ++bank) {
-            if (b[bank] != null) {
-                retString += String.format("        %s        ", b[bank].getName());
-            }
+        for (String s : Bank.BANK_NAMES) {
+        	retString += String.format("        %s        ", s);
         }
         retString += "\n";
         // Print the names
@@ -193,6 +169,9 @@ class CommandLine implements View {
             for (int bank = 0; bank < b.length; ++bank) {
                 if (b[bank] != null) {
                     retString += String.format("%20s",b[bank].get(prog).getName());
+                }
+                else {
+                	retString += "                    ";
                 }
             }
             retString += "\n";
