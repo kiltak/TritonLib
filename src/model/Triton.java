@@ -20,90 +20,114 @@ import model.sound.program.Program;
 import model.global.Global;
 
 public class Triton {
-	public Triton() {
-		_progs = new Bank[Bank.NUMBER_OF_BANKS];
+    public Triton() {
+        _progs = new Bank[Bank.NUMBER_OF_BANKS];
         _combis = new Bank[Bank.NUMBER_OF_BANKS];
-	}
-	
-	/**
-	 * Link all of the combinations to the programs.
-	 */
-	public void linkCombisToProgs () {
-	    clearCombiProgLinks();
-	    for (int bank = 0; bank < _combis.length; ++bank) {
-	        if (_combis[bank] != null) {
-    	        Bank b = _combis[bank];
-    	        for (int offset = 0; offset < 128; ++offset) {
-                    Location combiLoc = new Location (bank, offset);
-                    Combination c = (Combination)b.get(offset);
-    	            
-                    ArrayList<Location> progsInCombi = c.getProgramLocations();
-    	            for (Location progLoc : progsInCombi) {
-    	                if (_progs[progLoc.getBank()] != null) {
-                            ((Program)(_progs[progLoc.getBank()]._sounds[progLoc.getOffset()])).addCombi(combiLoc);
-    	                }
-    	                else {
-    	                    System.out.println ("couldn't set link for " + c.getName() + ", " + progLoc);
-    	                }
-    	            }
-    	        }
-	        }
-	    }
-	}
-	
-	/**
-	 * Clear out all of the program links to combinations.
-	 */
-	private void clearCombiProgLinks () {
-	    for (Bank b : _progs) {
-	        if (b != null) {
-    	        for (Program p : (Program[])b._sounds) {
-    	            p.clearCombis();
-    	        }
-	        }
-	    }
-	}
-	
-	/**
-	 * Transfer the sounds from the Pcg to the triton.
-	 * @param pcg
-	 */
-	public void setFromPcg (Pcg pcg) {
-	    setAllProgs (pcg.getProgs());
-	    setAllCombis (pcg.getCombis());
-	    _global = pcg.getGlobal();
-	}
-	
-	/**************
-	 *  PROGRAMS
-	 **************/
-	
-	public Bank[] getAllProgs () {
-	    return _progs;
-	}
-	
-	public void setAllProgs (Bank[] progs) {
-	    _progs = progs;
-	}
-	
-	public Bank getProgBank (int offset) {
-	    return _progs[offset];
-	}
-	
-	public void setProgBank (Bank bank, int offset) {
-	    _progs[offset] = bank;
-	}
-	
-	public Program getSingleProg (int bank, int offset) {
-	    return (Program)_progs[bank].get(offset);
-	}
-	
-	public void setSingleProg (Program p, int bank, int offset) {
-		if (_progs[bank] == null) {
-			_progs[bank] = new Bank(Bank.PROG, bank);
-		}
-	    _progs[bank].set(p, offset);
-	}
+    }
+    
+    /**
+     * Link a single combination to the programs that it references.
+     */
+    private void linkCombiToProgs (int combiBank, int combiOffset) {
+        Combination c = this.getSingleCombi(combiBank, combiOffset);
+        if (c != null) {
+            System.out.println ("Linking combi " + c.getName());
+            Location combiLoc = new Location (combiBank, combiOffset);
+            
+            ArrayList<Location> progsInCombi = c.getProgramLocations();
+            for (Location progLoc : progsInCombi) {
+                if (_progs[progLoc.getBank()] != null) {
+                    Program p = (Program)(_progs[progLoc.getBank()]._sounds[progLoc.getOffset()]);
+                    p.addCombi(combiLoc);
+                    System.out.println ("   " + p.getName());
+                }
+                else {
+                    System.out.println ("couldn't set link for " + c.getName() + ", " + progLoc);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Link a bank of combis to the programs they reference.
+     * 
+     * @param bank
+     */
+    private void linkCombiBankToProgs (int bank) {
+        if (_combis[bank] != null) {
+            for (int offset = 0; offset < 128; ++offset) {
+                linkCombiToProgs (bank, offset);
+            }
+        }
+    }
+    
+    /**
+     * Link all of the combinations to the programs.
+     */
+    public void linkAllCombisToProgs () {
+        clearCombiProgLinks();
+        for (int bank = 0; bank < _combis.length; ++bank) {
+            linkCombiBankToProgs (bank);
+        }
+    }
+    
+    /**
+     * Clear out all of the program links to combinations.
+     */
+    private void clearCombiProgLinks () {
+        for (Bank b : _progs) {
+            if (b != null) {
+                for (Program p : (Program[])b._sounds) {
+                    p.clearCombis();
+                }
+            }
+        }
+    }
+    
+    /**
+     * Transfer the sounds from the Pcg to the triton.
+     * @param pcg
+     */
+    public void setFromPcg (Pcg pcg) {
+        setAllProgs (pcg.getProgs());
+        setAllCombis (pcg.getCombis());
+        _global = pcg.getGlobal();
+    }
+    
+    /**************
+     *  PROGRAMS
+     **************/
+    
+    public Bank[] getAllProgs () {
+        return _progs;
+    }
+    
+    public void setAllProgs (Bank[] progs) {
+        _progs = progs;
+    }
+    
+    public Bank getProgBank (int offset) {
+        return _progs[offset];
+    }
+    
+    public void setProgBank (Bank bank, int offset) {
+        _progs[offset] = bank;
+    }
+    
+    public Program getSingleProg (int bank, int offset) {
+        if (_progs[bank] != null) {
+            return (Program)_progs[bank].get(offset);
+        }
+        
+        return null;
+    }
+    
+    public void setSingleProg (Program p, int bank, int offset) {
+        if (_progs[bank] == null) {
+            _progs[bank] = new Bank(Bank.PROG, bank);
+        }
+        _progs[bank].set(p, offset);
+    }
     
     /*********************
      *  COMBINATIONS
@@ -115,6 +139,7 @@ public class Triton {
     
     public void setAllCombis (Bank[] combis) {
         _combis = combis;
+        linkAllCombisToProgs();
     }
     
     public Bank getCombiBank (int offset) {
@@ -123,17 +148,23 @@ public class Triton {
     
     public void setCombiBank (Bank bank, int offset) {
         _combis[offset] = bank;
+        linkCombiBankToProgs (offset);
     }
     
     public Combination getSingleCombi (int bank, int offset) {
-        return (Combination)_combis[bank].get(offset);
+        if (_combis[bank] != null) {
+            return (Combination)_combis[bank].get(offset);
+        }
+        
+        return null;
     }
     
     public void setSingleCombi (Combination p, int bank, int offset) {
-		if (_combis[bank] == null) {
-			_combis[bank] = new Bank(Bank.COMBI, bank);
-		}
+        if (_combis[bank] == null) {
+            _combis[bank] = new Bank(Bank.COMBI, bank);
+        }
         _combis[bank].set(p, offset);
+        linkCombiToProgs (bank, offset);
     }
     
     /**************
@@ -151,13 +182,8 @@ public class Triton {
     /**************
      *  
      **************/
-	
-
-	// Programs: 5 int banks, 7 ext banks, 128 programs per bank
-	private Bank[] _progs;
-	
-	// Combinations: 5 int banks, 7 ext banks, 128 combis per bank
-	private Bank[] _combis;
-	
-	private Global _global = new Global();
+    
+    private Bank[] _progs;
+    private Bank[] _combis;
+    private Global _global = new Global();
 }
