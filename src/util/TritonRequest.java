@@ -41,8 +41,9 @@ public class TritonRequest {
     
     public static SysexMessage requestProgramParameterDump (int channel, int kind, int bank, int prog) {
         byte data[] = new byte[3];
-        data[0]  = (byte) (((byte)kind << 4) & 0x30);  // 00kk 0bbb
-        data[0] += (byte) (((byte)bank) & 0x07);
+        System.out.println ("bank " + bank);
+        data[0]  = (byte) (((byte)kind << 4) & 0x30);  // 00kk bbbb
+        data[0] |= (byte) (((byte)bank) & 0x0F);
         data[1]  = (byte) (0x7F & (byte)prog);
         data[2]  = 0x00; // reserved
         
@@ -51,7 +52,7 @@ public class TritonRequest {
     
     public static SysexMessage requestProgramWrite (int channel, int bank, int prog) {
         byte data[] = new byte[2];
-        data[0] = (byte) (0x07 & (byte)bank); // 0000 0bbb
+        data[0] = (byte) (0x0F & (byte)bank); // 0000 bbbb
         data[1] = (byte) (0x7F & (byte)prog); // 0ppp pppp
         
         return buildRequest(PROGRAM_WRITE_REQUEST, channel, data);
@@ -205,7 +206,6 @@ public class TritonRequest {
 		msgData[i++] = (byte) type;
 		if (inputData != null) {
 			for (int j = 0; j < inputData.length; ++j) {
-				System.out.println (String.format("%02X", inputData[j]));
 				msgData[i++] = inputData[j];
 			}
 		}
