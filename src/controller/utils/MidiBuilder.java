@@ -1,3 +1,8 @@
+/**
+ * Build the commands to send to the hardware.  This does not handle the requests, but rather the data
+ * (programs/combis/whatever) that is being loaded into the hardware.
+ */
+
 package controller.utils;
 
 public class MidiBuilder {

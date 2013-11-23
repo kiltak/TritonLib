@@ -1,3 +1,7 @@
+/**
+ * Handle the file input/output.  Currently this only supports PCG files.
+ */
+
 package controller.utils;
 
 import model.Triton;

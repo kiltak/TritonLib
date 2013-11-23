@@ -1,3 +1,7 @@
+/**
+ * Abstract class for handling the midi IO.  This sets up the input/output stuff.
+ */
+
 package controller.utils;
 
 import javax.sound.midi.MidiDevice;
@@ -31,8 +35,7 @@ public abstract class MidiIO implements Receiver {
 				_outPortReceiver = _outputDevice.getReceiver();
 
 			} catch (MidiUnavailableException e) {
-				System.out
-						.println("initMidiOut wasn't able to connect the device's Receiver to the Transmitter:");
+				System.out.println("initMidiOut wasn't able to connect the device's Receiver to the Transmitter:");
 				System.out.println(e);
 				_outputDevice.close();
 				_outputDevice = null;
@@ -67,8 +70,7 @@ public abstract class MidiIO implements Receiver {
 				_inTransmitter = _inputDevice.getTransmitter();
 				_inTransmitter.setReceiver(_inReceiver);
 			} catch (MidiUnavailableException e) {
-				System.out
-						.println("initMidiIn wasn't able to connect the device's Transmitter to the Receiver:");
+				System.out.println("initMidiIn wasn't able to connect the device's Transmitter to the Receiver:");
 				System.out.println(e);
 				_inputDevice.close();
 				_inputDevice = null;
@@ -100,16 +102,15 @@ public abstract class MidiIO implements Receiver {
 			return;
 		}
 		if (_outPortReceiver == null) {
-			System.out
-					.println("Can't send msg in sendMgs: _outPortReceiver is null");
+			System.out.println("Can't send msg in sendMgs: _outPortReceiver is null");
 			return;
 		}
 
-		 System.out.println ("Sending:");
-		 for (int i = 0; i < msg.getLength(); ++i) {
-		 System.out.print (String.format("%02X ", msg.getMessage()[i]));
-		 }
-		 System.out.println();
+		 //System.out.println ("Sending:");
+		 //for (int i = 0; i < msg.getLength(); ++i) {
+		 //System.out.print (String.format("%02X ", msg.getMessage()[i]));
+		 //}
+		 //System.out.println();
 
 		_outPortReceiver.send(msg, -1);
 	}
