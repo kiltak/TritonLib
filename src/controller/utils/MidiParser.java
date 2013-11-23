@@ -24,6 +24,7 @@ public class MidiParser {
     // private static final byte ALL_DATA_DUMP = 0x50;
 
     private Vector<Byte> _fullSysex = new Vector<Byte>();
+    private MessageFileDumper fileDump = new MessageFileDumper("everything");
 
     /**
      * 
@@ -64,6 +65,7 @@ public class MidiParser {
         }
 
         // System.out.println(strMessage);
+        fileDump.writeBytes(data);
 
         if (parseMsg) {
             parseMsg(_fullSysex, data, triton);
