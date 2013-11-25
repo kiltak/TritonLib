@@ -14,7 +14,7 @@ public class Location {
     public int getOffset () { return _offset; }
     
     public String toString () {
-        return "Location: " + Bank.BANK_NAMES[_bank] + "-" + _offset;
+        return "Location: " + _bank + "-" + _offset;
     }
     
     private final int _bank; // 0 - 10 ???

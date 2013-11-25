@@ -3,7 +3,8 @@ package controller;
 import javax.sound.midi.SysexMessage;
 
 import controller.utils.FileIO;
-import controller.utils.TritonMidiIO;
+import controller.utils.midi.TritonMidiIO;
+import staged.FileReader;
 import util.TritonRequest;
 import view.View;
 import model.Triton;
@@ -12,6 +13,19 @@ import model.sound.combination.Combination;
 import model.sound.program.Program;
 
 public class CommandLineController {
+    public CommandLineController () {
+        FileReader fr = new FileReader ("src/staged/dump/progDump");
+        SysexMessage msg;
+        while ((msg = fr.getNextMsg()) != null) {
+            _midiIO.send(msg, -1);
+        }
+        fr.close();
+//        fr = new FileReader ("src/staged/dump/everything");
+//        while ((msg = fr.getNextMsg()) != null) {
+//            _midiIO.send(msg, -1);
+//        }
+//        fr.close();
+    }
     
     /**
      * Initialize the midi channels being used.
@@ -45,7 +59,7 @@ public class CommandLineController {
      */
     public void readPcgFile (String filename) {
         FileIO.readPcgFile(_triton, filename);
-        _triton.linkCombisToProgs();
+        _triton.linkAllCombisToProgs();
     }
     
     /**
@@ -107,7 +121,7 @@ public class CommandLineController {
 
     public void requestEverything () {
     	requestAllPrograms();
-    	for (int i = Bank.EXTA; i < Bank.NUMBER_OF_BANKS; ++i) { // Rack hardware needs special invitation for these banks
+    	for (int i = Bank.PROG_EXTA; i < Bank.NUMBER_OF_PROG_BANKS; ++i) { // Rack hardware needs special invitation for EXT banks
     		requestProgramBank(i);
     	}
     	requestAllCombis();

@@ -336,9 +336,9 @@ public class Pcg {
     private Header _hdr = new Header();
     
     // Programs: 5 int banks, 6 ext banks
-    private Bank[] _progs = new Bank[Bank.NUMBER_OF_BANKS];
+    private Bank[] _progs = new Bank[Bank.NUMBER_OF_PROG_BANKS];
     // Combinations: 5 int banks, 6 ext banks
-    private Bank[] _combis = new Bank[Bank.NUMBER_OF_BANKS];
+    private Bank[] _combis = new Bank[Bank.NUMBER_OF_COMBI_BANKS];
     
     private List<DrumkitBankChunk> _dks = new ArrayList<DrumkitBankChunk>();
     private List<ArpeggioBankChunk> _arps = new ArrayList<ArpeggioBankChunk>();

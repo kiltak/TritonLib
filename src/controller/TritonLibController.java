@@ -1,7 +1,7 @@
 package controller;
 
 import controller.utils.FileIO;
-import controller.utils.TritonMidiIO;
+import controller.utils.midi.TritonMidiIO;
 import view.TritonLib;
 import model.Triton;
 import model.sound.Bank;
@@ -45,7 +45,7 @@ public class TritonLibController {
      */
     public void readPcgFile (String filename) {
         FileIO.readPcgFile(_triton, filename);
-        _triton.linkCombisToProgs();
+        _triton.linkAllCombisToProgs();
     }
     
     /**
