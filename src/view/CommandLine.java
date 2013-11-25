@@ -15,7 +15,7 @@ import model.sound.Location;
 import model.sound.combination.Combination;
 import model.sound.program.Program;
 import controller.CommandLineController;
-import controller.utils.TritonMidiIO;
+import controller.utils.midi.TritonMidiIO;
 
 class CommandLine implements View {
     public void setController (CommandLineController controller) {
@@ -157,9 +157,20 @@ class CommandLine implements View {
     @Override
     public void displayBanks(Bank[] b) {
         String retString = "";
+        // Get the headers
+        String[] hdrs = null;
+        for (Bank bank : b) {
+            if (bank != null) {
+                hdrs = bank.getBankNames();
+                break;
+            }
+        }
+        if (hdrs == null) { // Nothing in any of the banks
+            return;
+        }
         // Print the headers
         retString += "     ";
-        for (String s : Bank.BANK_NAMES) {
+        for (String s : hdrs) {
         	retString += String.format("        %s        ", s);
         }
         retString += "\n";

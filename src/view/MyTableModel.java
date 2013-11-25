@@ -5,7 +5,7 @@ import javax.swing.table.AbstractTableModel;
 import model.sound.Bank;
 
 public class MyTableModel extends AbstractTableModel {
-    private String[] columnNames = Bank.BANK_NAMES;
+    private String[] columnNames = Bank.BANK_NAMES[Bank.PROG];
     private Object[][] data = {
             { "1", "2", "3", "2", "3", "2", "3", "2", "3", "2", "3", "2", "Awesome" },
             { "4", "5", "6", "2", "3", "2", "3", "2", "3", "2", "3", "2", "Chris" }};
