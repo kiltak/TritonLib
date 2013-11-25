@@ -21,8 +21,8 @@ import model.global.Global;
 
 public class Triton {
     public Triton() {
-        _progs = new Bank[Bank.NUMBER_OF_BANKS];
-        _combis = new Bank[Bank.NUMBER_OF_BANKS];
+        _progs = new Bank[Bank.NUMBER_OF_PROG_BANKS];
+        _combis = new Bank[Bank.NUMBER_OF_COMBI_BANKS];
     }
     
     /**
