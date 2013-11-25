@@ -66,7 +66,11 @@ public class FileReader {
         int tmp; // Java is stupid with 'signed' bytes
         try {
             while ((s = _file.readLine()) != null) {
+                if (s.equals("")) {
+                    break;
+                }
                 if (s.contains("inside decodeMessage")) {
+                    _file.readLine(); // get passed the next new line
                     break;
                 }
                 else if (!s.equalsIgnoreCase("")) {
@@ -105,7 +109,7 @@ public class FileReader {
         FileReader _fr = new FileReader();
         SysexMessage msg;
         
-        if (!_fr.open("src/StagedData/Dumps/progBank")) {
+        if (!_fr.open("src/staged/dump/everything")) {
             System.exit(1);
         }
 
