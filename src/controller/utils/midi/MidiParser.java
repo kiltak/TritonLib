@@ -6,8 +6,8 @@ import java.util.Vector;
 
 import javax.sound.midi.SysexMessage;
 
-import util.TritonChange;
-import util.TritonDump;
+import triton.util.TritonChange;
+import triton.util.TritonDump;
 import triton.model.global.Global;
 import triton.model.sound.Location;
 import triton.model.sound.SoundWithLocation;

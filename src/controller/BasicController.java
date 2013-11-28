@@ -9,7 +9,7 @@ import triton.model.sound.Bank;
 import triton.model.sound.Location;
 import triton.model.sound.combination.Combination;
 import triton.model.sound.program.Program;
-import util.TritonRequest;
+import triton.util.TritonRequest;
 import view.View;
 import controller.utils.FileIO;
 import controller.utils.midi.TritonMidiIO;
