@@ -1,8 +1,8 @@
 package view;
 
-import model.sound.Bank;
-import model.sound.combination.Combination;
-import model.sound.program.Program;
+import triton.model.sound.Bank;
+import triton.model.sound.combination.Combination;
+import triton.model.sound.program.Program;
 
 public interface View {
     public abstract void displaySound (Program p);

@@ -9,16 +9,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Triton;
+import triton.model.Triton;
 import controller.pcg.bankChunk.ArpeggioBankChunk;
 import controller.pcg.bankChunk.CombinationBankChunk;
 import controller.pcg.bankChunk.DrumkitBankChunk;
 import controller.pcg.bankChunk.GlobalChunk;
 import controller.pcg.bankChunk.ProgramBankChunk;
-import model.sound.Bank;
-import model.sound.combination.Combination;
-import model.sound.program.Program;
-import model.global.Global;
+import triton.model.sound.Bank;
+import triton.model.sound.combination.Combination;
+import triton.model.sound.program.Program;
+import triton.model.global.Global;
 
 public class Pcg {
     public Pcg () {

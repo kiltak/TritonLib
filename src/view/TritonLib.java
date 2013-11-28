@@ -7,10 +7,10 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 
-import model.sound.Bank;
-import model.sound.Location;
-import model.sound.combination.Combination;
-import model.sound.program.Program;
+import triton.model.sound.Bank;
+import triton.model.sound.Location;
+import triton.model.sound.combination.Combination;
+import triton.model.sound.program.Program;
 import controller.TritonLibController;
 
 public class TritonLib extends JPanel implements ActionListener {

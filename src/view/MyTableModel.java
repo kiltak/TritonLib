@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.table.AbstractTableModel;
 
-import model.sound.Bank;
+import triton.model.sound.Bank;
 
 public class MyTableModel extends AbstractTableModel {
     private String[] columnNames = Bank.BANK_NAMES[Bank.PROG];

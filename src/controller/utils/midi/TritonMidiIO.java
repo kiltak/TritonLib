@@ -7,13 +7,12 @@ import java.util.Queue;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.SysexMessage;
 
-import model.Triton;
-import model.global.Global;
-import model.sound.Location;
-import model.sound.Sound;
-import model.sound.SoundWithLocation;
-import model.sound.combination.Combination;
-import model.sound.program.Program;
+import triton.model.Triton;
+import triton.model.global.Global;
+import triton.model.sound.Sound;
+import triton.model.sound.SoundWithLocation;
+import triton.model.sound.combination.Combination;
+import triton.model.sound.program.Program;
 
 public class TritonMidiIO extends MidiIO {
     
@@ -35,7 +34,7 @@ public class TritonMidiIO extends MidiIO {
     public void send(MidiMessage message, long lTimeStamp) {
         if (message instanceof SysexMessage) {
             ArrayList<Object> decodedItems = _midiParser.decodeMessage((SysexMessage) message);
-            if (decodedItems!= null) {
+            if (decodedItems != null) {
                 // Start dealing with the stuff that just came down
                 for (Object o : decodedItems) {
                     if (o instanceof SoundWithLocation) {
@@ -61,22 +60,32 @@ public class TritonMidiIO extends MidiIO {
                 } // end for decodedItems
                 
                 // Start sending commands to hardware again
-                midiSender.shouldRun(true); // the message is finished
-                t.interrupt();
+                midiSender.shouldSend(true); // the message is finished
+                if (midiSender.shouldBeInterrupted()) {
+                    t.interrupt();
+                }
             } // end (!decodedItems.isEmpty())
             else {
-                midiSender.shouldRun(false); // the message is to be continued...
+                midiSender.shouldSend(false); // the message is to be continued...
             }
         }
     }
     
     public void sendMsg(MidiMessage msg) {
+        boolean shouldBeInterrupted = midiSender.shouldBeInterrupted();
         midiSender.addMsg(msg);
-        t.interrupt();
+        if (shouldBeInterrupted) {
+            t.interrupt();
+        }
     }
     
     public void reallySendMsg(MidiMessage msg) {
         super.sendMsg(msg);
+    }
+    
+    public void close () {
+        midiSender.die();
+        super.close();
     }
     
     /**
@@ -99,12 +108,12 @@ public class TritonMidiIO extends MidiIO {
             MidiMessage msg;
             while (true) {
                 try {
-                    if (runFlag && !msgToSend.isEmpty()) {
+                    while (isRunning && sendFlag && !msgToSend.isEmpty()) {
                         msg = msgToSend.remove();
                         midiIO.reallySendMsg(msg);
                         Thread.sleep(1000); // Give the hardware a little breathing room
                     }
-                    Thread.sleep(5000);
+                    Thread.sleep(30000);
                 }
                 catch (InterruptedException e) {
                     // Sometimes it's good to wake up and get to work!
@@ -112,15 +121,44 @@ public class TritonMidiIO extends MidiIO {
             }
         }
         
+        /**
+         * Add a message to the queue of messages to send to hardware.
+         * 
+         * @param msg
+         */
         public void addMsg(MidiMessage msg) {
             msgToSend.add(msg);
         }
         
-        public void shouldRun(boolean runFlag) {
-            this.runFlag = runFlag;
+        /**
+         * Set if the thread should be sending data to hardware.  It usually should, but if the
+         * hardware is sending something back, then don't send anything to the hardware.
+         * 
+         * @param runFlag
+         */
+        public void shouldSend(boolean runFlag) {
+            this.sendFlag = runFlag;
         }
         
-        boolean runFlag = true;
+        /**
+         * The thread should be interrupted if it is allowed to send data, but doesn't have
+         * any data to send.  Note that you have to call this before you add data.
+         * 
+         * @return  True if it should be interrupted.
+         */
+        public boolean shouldBeInterrupted () {
+            return sendFlag && msgToSend.isEmpty();
+        }
+        
+        /**
+         * Stop this thread
+         */
+        public void die () {
+            isRunning = false;
+        }
+        
+        boolean sendFlag = true;
+        boolean isRunning = true;
         Queue<MidiMessage> msgToSend = new ArrayDeque<MidiMessage>(); // messages to send to hardware
         TritonMidiIO midiIO;
     }

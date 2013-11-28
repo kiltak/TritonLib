@@ -3,10 +3,10 @@ package controller;
 import controller.utils.FileIO;
 import controller.utils.midi.TritonMidiIO;
 import view.TritonLib;
-import model.Triton;
-import model.sound.Bank;
-import model.sound.combination.Combination;
-import model.sound.program.Program;
+import triton.model.Triton;
+import triton.model.sound.Bank;
+import triton.model.sound.combination.Combination;
+import triton.model.sound.program.Program;
 
 public class TritonLibController {
     public TritonLibController () {

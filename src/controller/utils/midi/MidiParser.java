@@ -6,12 +6,13 @@ import java.util.Vector;
 
 import javax.sound.midi.SysexMessage;
 
+import util.TritonChange;
 import util.TritonDump;
-import model.global.Global;
-import model.sound.Location;
-import model.sound.SoundWithLocation;
-import model.sound.combination.Combination;
-import model.sound.program.Program;
+import triton.model.global.Global;
+import triton.model.sound.Location;
+import triton.model.sound.SoundWithLocation;
+import triton.model.sound.combination.Combination;
+import triton.model.sound.program.Program;
 
 public class MidiParser {
     private Vector<Byte> _fullSysex = new Vector<Byte>();
@@ -102,6 +103,9 @@ public class MidiParser {
         // Triton ID is 0x50 bytes[2]
         if ((bytes[0] == 0x42) && ((bytes[1] & 0xF0) == 0x30) && (bytes[2] == 0x50)) {
             switch (bytes[3]) {
+                    /***********************
+                     * DUMPS
+                     **********************/
                 case TritonDump.PROGRAM_PARAMETER_DUMP:
                     return parseProgram(bytes);
                 case TritonDump.COMBINATION_PARAMETER_DUMP:
@@ -109,6 +113,17 @@ public class MidiParser {
                     return parseCombination(bytes);
                 case TritonDump.GLOBAL_DATA_DUMP:
                     return parseGlobal(bytes);
+                    /***********************
+                     * CHANGES (do nothing)
+                     **********************/
+                case TritonChange.MODE_CHANGE:
+                case TritonChange.PARAMTER_CHANGE:
+                case TritonChange.DK_PARAM_CHANGE:
+                case TritonChange.ARP_PAT_PARAM_CHANGE:
+                    return new ArrayList<Object>(); // return empty list (not null)
+                    /***********************
+                     * DEFAULT
+                     **********************/
                 default:
                     System.out.println("Unkown sysex msg (0x" + String.format("%02X", bytes[3])
                             + ") - " + bytes.length + " bytes");

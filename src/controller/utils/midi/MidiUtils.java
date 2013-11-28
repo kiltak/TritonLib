@@ -116,5 +116,12 @@ public class MidiUtils
         }
         System.out.println();
     }
+    
+    public static void printBytes(byte[] data) {
+        for (int i = 0; i < data.length; ++i) {
+            System.out.print(String.format("%02X ", data[i]));
+        }
+        System.out.println();
+    }
 }
 

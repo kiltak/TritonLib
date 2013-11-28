@@ -2,7 +2,7 @@ package controller.pcg.bankChunk;
 
 import controller.pcg.BadDataException;
 import controller.pcg.ChunkBody;
-import model.global.Global;
+import triton.model.global.Global;
 
 public class GlobalChunk extends ChunkBody {
     public int unpack(byte data[], int offset) throws BadDataException {

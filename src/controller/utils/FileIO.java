@@ -4,10 +4,10 @@
 
 package controller.utils;
 
-import model.Triton;
-import model.global.Global;
+import triton.model.Triton;
+import triton.model.global.Global;
 import controller.pcg.Pcg;
-import model.sound.Bank;
+import triton.model.sound.Bank;
 
 public class FileIO {
     public static void readPcgFile (Triton triton, String filename) {

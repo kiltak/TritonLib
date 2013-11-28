@@ -7,7 +7,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import model.sound.Bank;
+import triton.model.sound.Bank;
 
 public class NameChartPanel extends JPanel implements TableModelListener {
     public NameChartPanel () {

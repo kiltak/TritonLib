@@ -6,18 +6,17 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.SysexMessage;
 
-import util.TritonRequest;
-
-import model.sound.Bank;
-import model.sound.Location;
-import model.sound.combination.Combination;
-import model.sound.program.Program;
+import triton.model.sound.Bank;
+import triton.model.sound.Location;
+import triton.model.sound.combination.Combination;
+import triton.model.sound.program.Program;
 import controller.CommandLineController;
-import controller.utils.midi.TritonMidiIO;
 
 class CommandLine implements View {
+    
+    CommandLineController _controller = null;
+    
     public void setController (CommandLineController controller) {
         _controller = controller;
     }
@@ -44,7 +43,9 @@ class CommandLine implements View {
                               "s - save the sounds on the computer to disk",
                               "p - print everything out",
                               "d - print single program",
-                              "c - print single combination"
+                              "c - print single combination",
+                              "swapp - swap two programs",
+                              "swapc - swap two combinations"
                              };
     }
     
@@ -116,6 +117,28 @@ class CommandLine implements View {
                     System.out.println ("--- Combis ---");
                     lib._controller.displayAllCombinations();
                     break;
+                case "swapp":
+                    System.out.print ("Enter Bank A:");
+                    int bankA = Integer.parseInt(input.next());
+                    System.out.print ("Enter Offset A:");
+                    int offsetA = Integer.parseInt(input.next());
+                    System.out.print ("Enter Bank B:");
+                    int bankB = Integer.parseInt(input.next());
+                    System.out.print ("Enter Offset B:");
+                    int offsetB = Integer.parseInt(input.next());
+                    lib._controller.swapPrograms(bankA, offsetA, bankB, offsetB);
+                    break;
+                case "swapc":
+                    System.out.print ("Enter Bank A:");
+                    bankA = Integer.parseInt(input.next());
+                    System.out.print ("Enter Offset A:");
+                    offsetA = Integer.parseInt(input.next());
+                    System.out.print ("Enter Bank B:");
+                    bankB = Integer.parseInt(input.next());
+                    System.out.print ("Enter Offset B:");
+                    offsetB = Integer.parseInt(input.next());
+                    lib._controller.swapCombinations(bankA, offsetA, bankB, offsetB);
+                    break;
                 default:
                     System.out.println ("Didn't understand command - " + cmd);
                         
@@ -127,8 +150,6 @@ class CommandLine implements View {
         
         System.out.println ("Goodbye");
     }
-    
-    CommandLineController _controller = null;
 
     @Override
     public void displaySound(Program p) {

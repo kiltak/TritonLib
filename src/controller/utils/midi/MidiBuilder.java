@@ -3,7 +3,7 @@
  * (programs/combis/whatever) that is being loaded into the hardware.
  */
 
-package controller.utils;
+package controller.utils.midi;
 
 public class MidiBuilder {
 

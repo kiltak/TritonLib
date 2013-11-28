@@ -2,8 +2,8 @@ package controller.pcg.bankChunk;
 
 import controller.pcg.BadDataException;
 import controller.pcg.ChunkBody;
-import model.sound.Bank;
-import model.sound.program.Program;
+import triton.model.sound.Bank;
+import triton.model.sound.program.Program;
 
 public class ProgramBankChunk extends ChunkBody {
     public int unpack(byte data[], int offset) throws BadDataException {
