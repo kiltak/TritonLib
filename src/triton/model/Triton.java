@@ -136,6 +136,12 @@ public class Triton {
         _progs[bank].set(p, offset);
     }
     
+    public void renameProgram (int bank, int offset, String newName) {
+    	if (_progs[bank] != null) {
+    		_progs[bank].get(offset).setName(newName);
+    	}
+    }
+    
     /*********************
      *  COMBINATIONS
      *********************/
@@ -172,6 +178,12 @@ public class Triton {
         }
         _combis[bank].set(p, offset);
         linkCombiToProgs (bank, offset);
+    }
+    
+    public void renameCombination (int bank, int offset, String newName) {
+    	if (_combis[bank] != null) {
+    		_combis[bank].get(offset).setName(newName);
+    	}
     }
     
     /**************
