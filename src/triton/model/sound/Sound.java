@@ -74,7 +74,8 @@ public class Sound {
     
     public void setName (String newName) {
         if (newName != null) {
-            _name = newName.substring(0, 15);
+        	String formattedString = String.format("%-16s", newName);
+            _name = formattedString.substring(0, 16);
         }
     }
     
