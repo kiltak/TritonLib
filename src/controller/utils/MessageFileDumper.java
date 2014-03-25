@@ -19,8 +19,10 @@ public class MessageFileDumper {
 	public boolean open (String filename) {
 		try {
 			writer = new PrintWriter(filename, "UTF-8");
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+		} catch (FileNotFoundException e) {
 			return false;
+		} catch (UnsupportedEncodingException e) {
+            return false;
 		}
 		return true;
 	}
