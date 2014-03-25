@@ -1,11 +1,8 @@
 package controller.pcg;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.file.Path;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +18,49 @@ import triton.model.sound.program.Program;
 import triton.model.global.Global;
 
 public class Pcg {
+    /**
+     * 
+     */
     public Pcg () {
         
     }
     
+    /**
+     * Instantiate the PCG class using an existing Triton.
+     * 
+     * @param triton
+     */
     public Pcg (Triton triton) {
         _progs = triton.getAllProgs();
         _combis = triton.getAllCombis();
         _global = triton.getGlobal();
+    }
+    
+    /**
+     * Read the file into a byte array.
+     * 
+     * @param filename
+     * @return
+     */
+    private byte[] readFileToBytes (String filename) {
+        byte[] b;
+        try {
+            RandomAccessFile f = new RandomAccessFile (filename, "r");
+            b = new byte[(int)f.length()];
+            f.readFully(b);
+            f.close();
+            return b;
+        }
+        catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+            b = null;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            b = null;
+        }
+        
+        return b;
     }
     
     /**
@@ -38,14 +70,9 @@ public class Pcg {
      * @return
      */
     public boolean readFile (String filename) {
-        byte _data[];
+        byte _data[] = readFileToBytes (filename);
         
-        try {
-            Path path = Paths.get(filename);
-            _data = Files.readAllBytes(path);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+        if (_data == null) {
             return false;
         }
         
@@ -227,11 +254,11 @@ public class Pcg {
      * @throws IOException 
      */
     private void writeInt (RandomAccessFile file, int val) throws IOException {
-        file.write(ByteBuffer.allocate(4).putInt(val).array());
+        file.writeInt(val);
     }
     
     private void writeShort (RandomAccessFile file, short val) throws IOException {
-        file.write(ByteBuffer.allocate(2).putShort(val).array());
+        file.writeShort(val);
     }
     
     public String toString() {
