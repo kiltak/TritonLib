@@ -1,5 +1,7 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class Filter {
     public int unpack (byte data[], int offset) {
         _frequency = data[offset++];
@@ -17,6 +19,8 @@ class Filter {
         _intByAmEg = data[offset++];
         _intByAmLFO1 = data[offset++];
         _intByAmLFO2 = data[offset++];
+        
+        validate();
         
         return offset;
     }
@@ -39,6 +43,34 @@ class Filter {
         data[offset++] = (byte)_intByAmLFO2;
         
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+            Limits.checkLimits ("Filter._frequency", _frequency, 0, 99);
+            Limits.checkLimits ("Filter._kbdTrackIntensity", _kbdTrackIntensity, -99, 99);
+            Limits.checkLimits ("Filter._amSourceMOD1", _amSourceMOD1, 0, 0x2A);
+            Limits.checkLimits ("Filter._intByAmMOD1", _intByAmMOD1, -99, 99);
+            Limits.checkLimits ("Filter._amSourceMOD2", _amSourceMOD2, 0, 0x2A);
+            Limits.checkLimits ("Filter._intByAmMOD2", _intByAmMOD2, -99, 99);
+            Limits.checkLimits ("Filter._egIntensity", _egIntensity, -99, 99);
+            Limits.checkLimits ("Filter._egVelocity", _egVelocity, -99, 99);
+            Limits.checkLimits ("Filter._intByLFO1", _intByLFO1, -99, 99);
+            Limits.checkLimits ("Filter._intByLFO2", _intByLFO2, -99, 99);
+            Limits.checkLimits ("Filter._lfo1byJs", _lfo1byJs, -99, 99);
+            Limits.checkLimits ("Filter._lfo2byJs", _lfo2byJs, -99, 99);
+            Limits.checkLimits ("Filter._intByAmEg", _intByAmEg, -99, 99);
+            Limits.checkLimits ("Filter._intByAmLFO1", _intByAmLFO1, -99, 99);
+            Limits.checkLimits ("Filter._intByAmLFO2", _intByAmLFO2, -99, 99);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _frequency;         // byte  0

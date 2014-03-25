@@ -1,28 +1,32 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class Header {
     public int unpack (byte data[], int offset) {
         _hiStartOffset = (data[offset] & 0x80) >> 7;
         _hiReverse = (data[offset] & 0x40) >> 6;
-        _hiSampleNoMSB = data[offset] & 0x3F;
+        _hiSampleNoMSB = data[offset] & 0x03;
         ++offset;
         
-        _hiSampleNoLSB = data[offset++];
+        _hiSampleNoLSB = data[offset++] & 0xFF;
         _hiBank = data[offset++];
         _hiLevel = data[offset++];
         
         _lowStartOffset = (data[offset] & 0x80) >> 7;
         _lowReverse = (data[offset] & 0x40) >> 6;
-        _lowSampleNoMSB = data[offset] & 0x3F;
+        _lowSampleNoMSB = data[offset] & 0x03;
         ++offset;
         
-        _lowSampleNoLSB = data[offset++];
+        _lowSampleNoLSB = data[offset++] & 0xFF;
         _lowBank = data[offset++];
         _lowLevel = data[offset++];
         _delayStart = data[offset++];
         _velMSampleSw = data[offset++];
         _velZoneBottom = data[offset++];
         _velZoneTop = data[offset++];
+        
+        validate();
         
         return offset;
     }
@@ -51,6 +55,43 @@ class Header {
         data[offset++] = (byte)_velZoneTop;
         
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+
+        try {
+            Limits.checkLimits ("Header._hiStartOffset", _hiStartOffset, 0, 1);
+            Limits.checkLimits ("Header._hiReverse", _hiReverse, 0, 1);
+            
+            int hiSampleNo = ((_hiSampleNoMSB << 8) + _hiSampleNoLSB) &0xFFFF;
+            Limits.checkLimits ("Header.hiSampleNo", hiSampleNo, 0, 0x03E7);
+            Limits.checkLimits ("Header._hiSampleNoMSB", _hiSampleNoMSB, 0, 0x03);
+            Limits.checkLimits ("Header._hiSampleNoLSB", _hiSampleNoLSB, 0, 0xFF);
+            
+//            Limits.checkLimits ("Header._hiBank", _hiBank, 0, 1);
+            Limits.checkLimits ("Header._hiLevel", _hiLevel, 0, 127);
+            Limits.checkLimits ("Header._lowStartOffset", _lowStartOffset, 0, 1);
+            Limits.checkLimits ("Header._lowReverse", _lowReverse, 0, 1);
+            
+            int lowSampleNo = ((_lowSampleNoMSB << 8) + _lowSampleNoLSB) & 0xFFFF;
+            Limits.checkLimits ("Header.lowSampleNo", lowSampleNo, 0, 0x03E7);
+            Limits.checkLimits ("Header._lowSampleNoMSB", _lowSampleNoMSB, 0, 0x03);
+            Limits.checkLimits ("Header._lowSampleNoLSB", _lowSampleNoLSB, 0, 0xFF);
+            
+//            Limits.checkLimits ("Header._lowBank", _lowBank, 0, 1);
+            Limits.checkLimits ("Header._lowLevel", _lowLevel, 0, 127);
+            Limits.checkLimits ("Header._delayStart", _delayStart, 0, 0x61);
+            Limits.checkLimits ("Header._velMSampleSw", _velMSampleSw, 0, 127);
+            Limits.checkLimits ("Header._velZoneBottom", _velZoneBottom, 0, 127);
+            Limits.checkLimits ("Header._velZoneTop", _velZoneTop, 0, 127);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _hiStartOffset;   // byte  0, bit  7

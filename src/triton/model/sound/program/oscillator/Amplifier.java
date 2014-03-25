@@ -1,5 +1,7 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class Amplifier {
     public int unpack (byte data[], int offset) {
         _level = data[offset++];
@@ -12,6 +14,8 @@ class Amplifier {
         _intByAmLFO1 = data[offset++];
         _amSourceLFO2 = data[offset++];
         _intByAmLFO2 = data[offset++];
+        
+        validate();
         
         return offset;
     }
@@ -29,6 +33,29 @@ class Amplifier {
         data[offset++] = (byte)_intByAmLFO2;
         
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+            Limits.checkLimits ("Amplifier._level", _level, 0, 127);
+//            Limits.checkLimits ("Amplifier.intByVelocity", _intByVelocity, -99, 99);
+            Limits.checkLimits ("Amplifier.amSource", _amSource, 0, 0x2A);
+//            Limits.checkLimits ("Amplifier.intByAM", _intByAM, -99, 99);
+//            Limits.checkLimits ("Amplifier.intByLFO1", _intByLFO1, -99, 99);
+//            Limits.checkLimits ("Amplifier.intByLFO2", _intByLFO2, -99, 99);
+            Limits.checkLimits ("Amplifier.amSourceLFO1", _amSourceLFO1, 0, 0x2A);
+//            Limits.checkLimits ("Amplifier.intByAmLFO1", _intByAmLFO1, -99, 99);
+            Limits.checkLimits ("Amplifier.amSourceLFO2", _amSourceLFO2, 0, 0x2A);
+//            Limits.checkLimits ("Amplifier.intByAmLFO2", _intByAmLFO2, -99, 99);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _level;         // byte 0

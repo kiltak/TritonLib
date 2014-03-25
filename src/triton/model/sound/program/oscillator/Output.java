@@ -1,13 +1,17 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class Output {
     public int unpack (byte data[], int offset) {
         _reserved = data[offset++];
-        _pan = data[offset++];
+        _pan = data[offset++] & 0x7F;
         _amSource = data[offset++];
         _intByAm = data[offset++];
-        _send1 = data[offset++];
-        _send2 = data[offset++];
+        _send1 = data[offset++] & 0x7F;
+        _send2 = data[offset++] & 0x7F;
+        
+        validate();
         
         return offset;
     }
@@ -33,6 +37,25 @@ class Output {
         retString += "Send 2    " + _send2 + "\n";
         
         return retString;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+//            Limits.checkLimits ("Output._reserved", _reserved, 0, );
+            Limits.checkLimits ("Output._pan", _pan, 0, 127);
+            Limits.checkLimits ("Output._amSource", _amSource, 0, 0x2A);
+//            Limits.checkLimits ("Output._intByAm", _intByAm, -99, 99);
+            Limits.checkLimits ("Output._send1", _send1, 0, 127);
+            Limits.checkLimits ("Output._send2", _send2, 0, 127);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private byte _reserved;  // byte 0

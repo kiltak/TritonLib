@@ -1,5 +1,7 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class AmplifierEg {
     public int unpack (byte data[], int offset) {
         _startLevel = data[offset++];
@@ -23,19 +25,21 @@ class AmplifierEg {
         _releaseAmTime1 = (data[offset] & 0xC0) >> 6;
         ++offset;
         
-        _attackAmTime2 = data[offset];
+        _attackAmTime2 = data[offset] & 0x03;
         _decayAmTime2 = (data[offset] & 0x0C) >> 2;
         _sloopeAmTime2 = (data[offset] & 0x30) >> 4;
         _releaseAmTime2 = (data[offset] & 0xC0) >> 6;
         ++offset;
         
-        _startAmLevel = data[offset];
+        _startAmLevel = data[offset] & 0x03;
         _attackAmLevel = (data[offset] & 0x0C) >> 2;
         _breakAmLevel = (data[offset] & 0x30) >> 4;
         ++offset;
         
         _reserved = data[offset++];
 
+        validate();
+        
         return offset;
     }
     
@@ -75,6 +79,45 @@ class AmplifierEg {
         data[offset++] = (byte)_reserved;
 
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+            Limits.checkLimits ("AmplifierEg._startLevel", _startLevel, 0, 99);
+            Limits.checkLimits ("AmplifierEg._attackTime", _attackTime, 0, 99);
+            Limits.checkLimits ("AmplifierEg._attackLevel", _attackLevel, 0, 99);
+            Limits.checkLimits ("AmplifierEg._decayTime", _decayTime, 0, 99);
+            Limits.checkLimits ("AmplifierEg._breakPointLevel", _breakPointLevel, 0, 99);
+            Limits.checkLimits ("AmplifierEg._slopeTime", _slopeTime, 0, 99);
+            Limits.checkLimits ("AmplifierEg._sustainLevel", _sustainLevel, 0, 99);
+            Limits.checkLimits ("AmplifierEg._releaseTime", _releaseTime, 0, 99);
+            Limits.checkLimits ("AmplifierEg._amSourceTime1", _amSourceTime1, 0, 0x2A);
+            Limits.checkLimits ("AmplifierEg._intByAmTime1", _intByAmTime1, -99, 99);
+            Limits.checkLimits ("AmplifierEg._amSourceTime2", _amSourceTime2, 0, 0x2A);
+            Limits.checkLimits ("AmplifierEg._intByAmTime2", _intByAmTime2, -99, 99);
+            Limits.checkLimits ("AmplifierEg._amSourceLevel", _amSourceLevel, 0, 0x2A);
+            Limits.checkLimits ("AmplifierEg._intByAmLevel", _intByAmLevel, -99, 99);
+            Limits.checkLimits ("AmplifierEg._attackAmTime1", _attackAmTime1, 0, 3);
+            Limits.checkLimits ("AmplifierEg._decayAmTime1", _decayAmTime1, 0, 3);
+            Limits.checkLimits ("AmplifierEg._sloopeAmTime1", _sloopeAmTime1, 0, 3);
+            Limits.checkLimits ("AmplifierEg._releaseAmTime1", _releaseAmTime1, 0, 3);
+            Limits.checkLimits ("AmplifierEg._attackAmTime2", _attackAmTime2, 0, 3);
+            Limits.checkLimits ("AmplifierEg._decayAmTime2", _decayAmTime2, 0, 3);
+            Limits.checkLimits ("AmplifierEg._sloopeAmTime2", _sloopeAmTime2, 0, 3);
+            Limits.checkLimits ("AmplifierEg._releaseAmTime2", _releaseAmTime2, 0, 3);
+            Limits.checkLimits ("AmplifierEg._startAmLevel", _startAmLevel, 0, 3);
+            Limits.checkLimits ("AmplifierEg._attackAmLevel", _attackAmLevel, 0, 3);
+            Limits.checkLimits ("AmplifierEg._breakAmLevel", _breakAmLevel, 0, 3);
+//            Limits.checkLimits ("AmplifierEg._reserved", _reserved, 0, );
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _startLevel;      // byte  0

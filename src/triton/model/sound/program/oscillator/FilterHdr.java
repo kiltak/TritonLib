@@ -1,5 +1,7 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class FilterHdr {
     public int unpack (byte data[], int offset) {
         _type = data[offset++];
@@ -10,6 +12,8 @@ class FilterHdr {
         _amSourceEg = data[offset++];
         _amSourceLFO1 = data[offset++];
         _amSourceLFO2 = data[offset++];
+        
+        validate();
         
         return offset;
     }
@@ -25,6 +29,27 @@ class FilterHdr {
         data[offset++] = (byte)_amSourceLFO2;
         
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+            Limits.checkLimits ("FilterHdr._type", _type, 0, 1);
+            Limits.checkLimits ("FilterHdr._trim", _trim, 0, 99);
+            Limits.checkLimits ("FilterHdr._resonance", _resonance, 0, 99);
+            Limits.checkLimits ("FilterHdr._amSourceReso", _amSourceReso, 0, 0x2A);
+//            Limits.checkLimits ("FilterHdr._intByAmReso", _intByAmReso, -99, 99);
+            Limits.checkLimits ("FilterHdr._amSourceEg", _amSourceEg, 0, 0x2A);
+            Limits.checkLimits ("FilterHdr._amSourceLFO1", _amSourceLFO1, 0, 0x2A);
+            Limits.checkLimits ("FilterHdr._amSourceLFO2", _amSourceLFO2, 0, 0x2A);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _type;          // byte 0

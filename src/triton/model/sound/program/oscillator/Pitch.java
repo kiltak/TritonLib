@@ -1,5 +1,7 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class Pitch {
     public int unpack (byte data[], int offset) {
         _octave = data[offset++];
@@ -15,7 +17,7 @@ class Pitch {
         _intByLFO1 = data[offset++];
         _intByLFO2 = data[offset++];
         
-        _portamento = data[offset];
+        _portamento = data[offset] & 0x01;
         _portamentFingered = (data[offset] & 0x02) >> 1;
         ++offset;
         
@@ -30,6 +32,8 @@ class Pitch {
         _intByAmLFO1 = data[offset++];
         _amSourceLFO2 = data[offset++];
         _intByAmLFO2 = data[offset++];
+        
+        validate();
         
         return offset;
     }
@@ -49,7 +53,7 @@ class Pitch {
         data[offset++] = (byte)_intByLFO2;
         
         data[offset]  = (byte)_portamento;
-        data[offset] |= (byte)(_portamentFingered & 0x02) << 1;
+        data[offset] |= (byte)_portamentFingered << 1;
         ++offset;
         
         data[offset++] = (byte)_portamentoTime;
@@ -65,6 +69,44 @@ class Pitch {
         data[offset++] = (byte)_intByAmLFO2;
         
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+//            Limits.checkLimits ("Pitch._octave", _octave, 4, 32);
+            Limits.checkLimits ("Pitch._transpose", _transpose, -12, 12);
+//            Limits.checkLimits ("Pitch._tuneMSB", _tuneMSB, 0, );
+//            Limits.checkLimits ("Pitch._tuneLSB", _tuneLSB, 0, );
+            Limits.checkLimits ("Pitch._amSourcePitch", _amSourcePitch, 0, 0x2A);
+//            Limits.checkLimits ("Pitch._intByAmPitch", _intByAmPitch, 0, );
+//            Limits.checkLimits ("Pitch._pitchSlope", _pitchSlope, 0, );
+//            Limits.checkLimits ("Pitch._intByPitchEg", _intByPitchEg, 0, );
+            Limits.checkLimits ("Pitch._amSourcePEG", _amSourcePEG, 0, 0x2A);
+//            Limits.checkLimits ("Pitch._intByAmPEG", _intByAmPEG, 0, );
+//            Limits.checkLimits ("Pitch._intByLFO1", _intByLFO1, 0, );
+//            Limits.checkLimits ("Pitch._intByLFO2", _intByLFO2, 0, );
+            Limits.checkLimits ("Pitch._portamento", _portamento, 0, 1);
+            Limits.checkLimits ("Pitch._portamentFingered", _portamentFingered, 0, 1);
+            Limits.checkLimits ("Pitch._portamentoTime", _portamentoTime, 0, 127);
+            Limits.checkLimits ("Pitch._pitchByJsPos", _pitchByJsPos, -60, 12);
+            Limits.checkLimits ("Pitch._pitchByJsNeg", _pitchByJsNeg, -60, 12);
+            Limits.checkLimits ("Pitch._pitchByRibbon", _pitchByRibbon, -12, 12);
+//            Limits.checkLimits ("Pitch._reserved", _reserved, 0, );
+//            Limits.checkLimits ("Pitch._lfo1IntByJS", _lfo1IntByJS, 0, );
+//            Limits.checkLimits ("Pitch._lfo2IntByJS", _lfo2IntByJS, 0, );
+            Limits.checkLimits ("Pitch._amSourceLFO1", _amSourceLFO1, 0, 0x2A);
+//            Limits.checkLimits ("Pitch._intByAmLFO1", _intByAmLFO1, 0, );
+            Limits.checkLimits ("Pitch._amSourceLFO2", _amSourceLFO2, 0, 0x2A);
+//            Limits.checkLimits ("Pitch._intByAmLFO2", _intByAmLFO2, 0, );
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _octave;             // byte  0

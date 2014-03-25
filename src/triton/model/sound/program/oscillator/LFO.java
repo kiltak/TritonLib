@@ -1,14 +1,16 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class LFO {
     public int unpack (byte data[], int offset) {
-        _waveform = (short)(data[offset] & 0x1F);
+        _waveform = data[offset] & 0x7F;
         _keySync = ((data[offset] & 0x80) != 0);
         offset++;
         
         _frequency = data[offset++];
-        _offset = data[offset++];
-        _delay = data[offset++];
+        _offset = data[offset++] & 0xFF;
+        _delay = data[offset++] & 0x7F;
         _fade = data[offset++];
         
         _midiTempoSync = (byte)((data[offset] & 0x80) >> 7);
@@ -16,12 +18,40 @@ class LFO {
         _times = (byte)(data[offset] & 0x0F);
         offset++;
         
-        _amSourceTime1 = data[offset++];
+        _amSourceTime1 = data[offset++] & 0x2F;
         _intByAmTime1 = data[offset++];
-        _amSourceTime2 = data[offset++];
+        _amSourceTime2 = data[offset++] & 0x2F;
         _intByAmTime2 = data[offset++];
         
+        validate();
+        
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+
+        try {
+            Limits.checkLimits ("LFO._waveform", _waveform, 0, 0x14);
+//            Limits.checkLimits ("LFO._keySync", _keySync, 0, 1);
+            Limits.checkLimits ("LFO._frequency", _frequency, 0, 99);
+//            Limits.checkLimits ("LFO._offset", _offset, -99, 99);
+            Limits.checkLimits ("LFO._delay", _delay, 0, 99);
+            Limits.checkLimits ("LFO._fade", _fade, 0, 99);
+            Limits.checkLimits ("LFO._midiTempoSync", _midiTempoSync, 0, 1);
+            Limits.checkLimits ("LFO._syncBaseNote", _syncBaseNote, 0, 7);
+            Limits.checkLimits ("LFO._times", _times, 0, 16);
+            Limits.checkLimits ("LFO._amSourceTime1", _amSourceTime1, 0, 0x2A);
+//            Limits.checkLimits ("LFO._intByAmTime1", _intByAmTime1, -99, 99);
+            Limits.checkLimits ("LFO._amSourceTime2", _amSourceTime2, 0, 0x2A);
+//            Limits.checkLimits ("LFO._intByAmTime2", _intByAmTime2, -99, 99);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private String getWaveformString() {
@@ -73,7 +103,7 @@ class LFO {
     }
     
     public int pack (byte data[], int offset) {
-        data[offset] = (byte)(_waveform & 0x1F);  // bits 0-4
+        data[offset] = (byte)_waveform;  // bits 0-4
         if (_keySync) {
             data[offset] |= 0x80;  // bit 7
         }
@@ -125,7 +155,7 @@ class LFO {
         return retString;
     }
     
-    private short _waveform;     // byte 0, bits 0-4
+    private int _waveform;     // byte 0, bits 0-4
     private boolean _keySync;    // byte 0, bit 7
     private int _frequency;      // byte 1
     private int _offset;         // byte 2

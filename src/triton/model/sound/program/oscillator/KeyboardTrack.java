@@ -1,11 +1,15 @@
 package triton.model.sound.program.oscillator;
 
+import triton.util.Limits;
+
 class KeyboardTrack {
     public int unpack (byte data[], int offset) {
-        _keyLow = data[offset++];
+        _keyLow = data[offset++] & 0x7F;
         _rampLow = data[offset++];
-        _keyHigh = data[offset++];
+        _keyHigh = data[offset++] & 0x7F;
         _rampHigh = data[offset++];
+        
+        validate();
         
         return offset;
     }
@@ -27,6 +31,23 @@ class KeyboardTrack {
         retString += "RampHigh " + _rampHigh + "\n";
         
         return retString;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+            Limits.checkLimits ("KeyboardTrack._keyLow", _keyLow, 0, 0x7F);
+            Limits.checkLimits ("KeyboardTrack._rampLow", _rampLow, -99, 99);
+            Limits.checkLimits ("KeyboardTrack._keyHigh", _keyHigh, 0, 0x7F);
+            Limits.checkLimits ("KeyboardTrack._rampHigh", _rampHigh, -99, 99);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _keyLow;   // byte 0
