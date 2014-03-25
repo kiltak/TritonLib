@@ -23,6 +23,14 @@ public class Triton {
     public Triton() {
         _progs = new Bank[Bank.NUMBER_OF_PROG_BANKS];
         _combis = new Bank[Bank.NUMBER_OF_COMBI_BANKS];
+        
+        // Go ahead and put in some empty banks.  I'm torn if this is a good idea or not.
+        for (int i = 0; i < Bank.NUMBER_OF_PROG_BANKS; ++i) {
+            _progs[i] = new Bank(Bank.PROG, i);
+        }
+        for (int i = 0; i < Bank.NUMBER_OF_COMBI_BANKS; ++i) {
+            _combis[i] = new Bank(Bank.COMBI, i);
+        }
     }
     
     /**
