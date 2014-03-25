@@ -106,11 +106,29 @@ public class Bank {
     }
     
     /**
-     * Get the array of bank names (Prog or Combi).
-     * @return
+     * Get the array of bank names (Prog or Combi).  The command line program uses this to only
+     * display when stuff is present.
+     * 
+     * @return The bank names or null.
      */
     public String[] getBankNames () {
-        return BANK_NAMES[_bankType];
+        return getBankNames(_bankType);
+    }
+    
+    /**
+     * Get the array of bank names.
+     * 
+     * @param type  Should either be PROG or COMBI
+     * @return The bank names or null
+     */
+    public static String[] getBankNames (int type) {
+        switch (type) {
+            case PROG:
+            case COMBI:
+                return BANK_NAMES[type];
+            default:
+                return null;
+        }
     }
     
     public Sound[] _sounds;
@@ -122,7 +140,7 @@ public class Bank {
         {"IntA", "IntB", "IntC", "IntD", "IntE", "IntF", "ExtA", "ExtB", "ExtC", "ExtD", "ExtE", "ExtF", "ExtG", "ExtH"},
         // Combinations
         {"IntA", "IntB", "IntC", "IntD", "IntE", "ExtA", "ExtB", "ExtC", "ExtD", "ExtE", "ExtF", "ExtG", "ExtH"}
-    };;
+    };
     
     public final static int PROG  = 0;
     public final static int COMBI = 1;
