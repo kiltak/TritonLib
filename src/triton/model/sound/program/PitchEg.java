@@ -1,5 +1,7 @@
 package triton.model.sound.program;
 
+import triton.util.Limits;
+
 class PitchEg {
     public int unpack (byte data[], int offset) {
         _startLevel = data[offset++];
@@ -24,6 +26,8 @@ class PitchEg {
         _attackAmTime = data[offset] & 0x03;
         _decayAmTime = (data[offset] & 0x0C) >> 2;
         ++offset;
+        
+        validate();
         
         return offset;
     }
@@ -53,6 +57,37 @@ class PitchEg {
         ++offset;
         
         return offset;
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+        
+        try {
+            Limits.checkLimits ("_startLevel", _startLevel, -99, 99);
+            Limits.checkLimits ("_attackTime", _attackTime, 0, 99);
+            Limits.checkLimits ("_attackLevel", _attackLevel, -99, 99);
+            Limits.checkLimits ("_decayTime", _decayTime, 0, 99);
+            Limits.checkLimits ("_releaseTime", _releaseTime, 0, 99);
+            Limits.checkLimits ("_releaseLevel", _releaseLevel, -99, 99);
+            Limits.checkLimits ("_amSourceLevel1", _amSourceLevel1, 0, 0x2A);
+            Limits.checkLimits ("_intByAmLevel1", _intByAmLevel1, -99, 99);
+            Limits.checkLimits ("_amSourceLevel2", _amSourceLevel2, 0, 0x2A);
+            Limits.checkLimits ("_intByAmLevel2", _intByAmLevel2, -99, 99);
+            Limits.checkLimits ("_amSourceTime", _amSourceTime, 0, 0x2A);
+            Limits.checkLimits ("_intByAmTime", _intByAmTime, -99, 99);
+            Limits.checkLimits ("_startAmLevel1", _startAmLevel1, 0, 3);
+            Limits.checkLimits ("_attackAmLevel1", _attackAmLevel1, 0, 3);
+            Limits.checkLimits ("_startAmLevel2", _startAmLevel2, 0, 3);
+            Limits.checkLimits ("_attackAmLevel2", _attackAmLevel2, 0, 3);
+            Limits.checkLimits ("_attackAmTime", _attackAmTime, 0, 3);
+            Limits.checkLimits ("_decayAmTime", _decayAmTime, 0, 3);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        return retVal;
     }
     
     private int _startLevel;     // byte  0

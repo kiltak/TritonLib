@@ -1,5 +1,7 @@
 package triton.model.sound.program;
 
+import triton.util.Limits;
+
 class Common {
     public Common () {
         for (int i = 0; i < _sw.length; ++i) {
@@ -36,6 +38,8 @@ class Common {
         _knob2Assign = data[offset++];
         _knob3Assign = data[offset++];
         _knob4Assign = data[offset++];
+        
+        validate();
         
         return offset;
     }
@@ -92,9 +96,60 @@ class Common {
             return offset;
         }
         
+        public boolean validate () {
+            try {
+                Limits.checkLimits ("_assignType", _assignType, 0, 0x0C);
+                Limits.checkLimits ("_toggleMomentary", _toggleMomentary, 0, 1);
+                Limits.checkLimits ("_onOff", _onOff, 0, 1);
+            }
+            catch (IllegalArgumentException e) {
+                System.out.println (e);
+                return false;
+            }
+            
+            return true;
+        }
+        
         public int _assignType;       // byte 0, bits 0-5
         public int _toggleMomentary;  // byte 0, bit  6
         public int _onOff;            // byte 0, bit  7
+    }
+    
+    private boolean validate () {
+        boolean retVal = true;
+
+        try {
+            Limits.checkLimits ("_oscMode", _oscMode, 0, 2);
+            Limits.checkLimits ("_keyAssign", _keyAssign, 0, 1);
+            Limits.checkLimits ("_legato", _legato, 0, 1);
+            Limits.checkLimits ("_priority", _priority, 0, 2);
+            Limits.checkLimits ("_singletrigger", _singletrigger, 0, 1);
+            Limits.checkLimits ("_hold", _hold, 0, 1);
+            Limits.checkLimits ("_busSelect", _busSelect, 0, 0x0C);
+            Limits.checkLimits ("_useDkSetting", _useDkSetting, 0, 1);
+            Limits.checkLimits ("_category", _category, 0, 15);
+            Limits.checkLimits ("_scaleType", _scaleType, 0, 0x1A);
+            Limits.checkLimits ("_scaleKey", _scaleKey, 0, 0x0C);
+            Limits.checkLimits ("_randomIntensity", _randomIntensity, 0, 7);
+            Limits.checkLimits ("_knob1AssignType", _knob1AssignType, 0, 0x7C);
+            Limits.checkLimits ("_realtimeControls", _realtimeControls, 0, 1);
+            Limits.checkLimits ("_knob2Assign", _knob2Assign, 0, 0x7C);
+            Limits.checkLimits ("_realtimeControlsMSB", _realtimeControlsMSB, 0, 1);
+            Limits.checkLimits ("_knob3Assign", _knob3Assign, 0, 0x7C);
+            Limits.checkLimits ("_knob4Assign", _knob4Assign, 0, 0x7C);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println (e);
+            retVal = false;
+        }
+        
+        for (sw s : _sw) {
+            if (!s.validate()) {
+                retVal = false;
+            }
+        }
+        
+        return retVal;
     }
     
     private int _oscMode;          // byte 0, bits 0-1
@@ -112,7 +167,8 @@ class Common {
     private sw  _sw[] = new sw[2]; // bytes 6-7
     private int _knob1AssignType;  // byte 8, bits 0-6
     private int _realtimeControls; // byte 8, bit  7
-    private int _knob2Assign;      // byte 9
+    private int _knob2Assign;      // byte 9, bits 0-6
+    private int _realtimeControlsMSB; // byte 9, bit 7
     private int _knob3Assign;      // byte 10
     private int _knob4Assign;      // byte 11
     

@@ -22,7 +22,11 @@ public class Program extends Sound {
      * @return
      */
     public int unpack(byte data[], int offset) {
+        byte[] oldArr = new byte[Program.BYTE_SIZE];
+        System.arraycopy(data, offset, oldArr, 0, Program.BYTE_SIZE);
         offset = super.unpack(data, offset);
+        
+        System.out.println ("unpacking " + _name);
         
         // Unpack the other stuff
         offset = _arp.unpack(data, offset);
@@ -38,6 +42,13 @@ public class Program extends Sound {
         for (int i = 0; i < _reserved.length; ++i) {
             _reserved[i] = data[offset++];
         }
+        
+//        byte[] cmp = pack();
+//        for (int z = 0; z < cmp.length; ++z) {
+//            if (cmp[z] != oldArr[z]) {
+//                System.out.println (String.format("***** %d - new %02X, data %02X", z, cmp[z], oldArr[z]));
+//            }
+//        }
         
         return offset;
     }
