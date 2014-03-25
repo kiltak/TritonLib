@@ -85,6 +85,7 @@ public class TritonMidiIO extends MidiIO {
     
     public void close () {
         midiSender.die();
+        t.interrupt();
         super.close();
     }
     
@@ -106,7 +107,7 @@ public class TritonMidiIO extends MidiIO {
         @Override
         public void run() {
             MidiMessage msg;
-            while (true) {
+            while (isRunning) {
                 try {
                     while (isRunning && sendFlag && !msgToSend.isEmpty()) {
                         msg = msgToSend.remove();

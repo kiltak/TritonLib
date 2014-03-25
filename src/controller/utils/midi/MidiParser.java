@@ -28,6 +28,7 @@ public class MidiParser {
         boolean parseMsg = true;
         
         // Set up the string to print
+        @SuppressWarnings("unused")
         String strMessage = null;
         if (message.getStatus() == SysexMessage.SYSTEM_EXCLUSIVE) {
             strMessage = "Sysex message: F0" + getHexString(data);
